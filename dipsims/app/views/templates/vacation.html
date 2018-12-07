@@ -1,0 +1,69 @@
+<!--<section class="content-header">-->
+<!--   <h1>-->
+<!--       <i class="fa fa-coffee"></i> {{phrase.Vacation}}-->
+<!--   </h1>-->
+<!--</section>-->
+
+<!--<section class="content" ng-show="views.list">-->
+<!-- <div class="box col-xs-12">-->
+<!--   <div class="box-header">-->
+<!--       <h3 class="box-title">{{phrase.selectVacationDates}}</h3>-->
+<!--   </div>-->
+<!--   <div class="box-body table-responsive">-->
+<!--     <form class="form-horizontal" ng-submit="getVacation()" name="vacation" novalidate>-->
+<!--       <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': vacation.fromDate.$invalid}">-->
+<!--         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.from}} *</label>-->
+<!--         <div class="col-sm-10">-->
+<!--           <input type="text" name="fromDate" ng-model="form.fromDate" class="form-control datemask" required>-->
+<!--         </div>-->
+<!--       </div>-->
+<!--       <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': vacation.toDate.$invalid}">-->
+<!--         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.to}} *</label>-->
+<!--         <div class="col-sm-10">-->
+<!--           <input type="text" name="toDate" ng-model="form.toDate" class="form-control datemask" required>-->
+<!--         </div>-->
+<!--       </div>-->
+<!--       <div date-picker selector=".datemask" ></div>-->
+<!--       <div class="form-group">-->
+<!--         <div class="col-sm-offset-2 col-sm-10">-->
+<!--           <button type="submit" class="btn btn-default" ng-disabled="vacation.$invalid">{{phrase.getVacation}}</button>-->
+<!--         </div>-->
+<!--       </div>-->
+<!--     </form>-->
+<!--   </div>-->
+<!-- </div>-->
+<!--</section>-->
+
+<!--<section class="content" ng-show="views.lists">-->
+<!-- <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>-->
+<!-- <div class="box col-xs-12">-->
+<!--   <div class="box-header">-->
+<!--     <h3 class="box-title">{{phrase.confirmVacation}}</h3>-->
+<!--   </div>-->
+<!--   <div class="box-body table-responsive">-->
+<!--     <form class="form-horizontal" ng-submit="confirmVacation()" name="form" novalidate>-->
+<!--       <table class="table table-bordered">-->
+<!--           <tbody><tr>-->
+<!--               <th>{{phrase.Date}}</th>-->
+<!--               <th>{{phrase.notes}}</th>-->
+<!--           </tr>-->
+<!--           <tr ng-repeat="date in vacation.vacations">-->
+<!--               <td>{{date}}</td>-->
+<!--               <td>{{phease.publicHoliday}}</td>-->
+<!--           </tr>-->
+<!--           <tr ng-repeat="date in vacation.days">-->
+<!--               <td>{{date}}</td>-->
+<!--               <td></td>-->
+<!--           </tr>-->
+<!--         </tbody>-->
+<!--       </table>-->
+<!--       <br/>-->
+<!--       <div class="form-group">-->
+<!--         <div class="col-sm-offset-2 col-sm-10">-->
+<!--           <button type="submit" class="btn btn-default">{{phrase.confirmVacation}}</button>-->
+<!--         </div>-->
+<!--       </div>-->
+<!--     </form>-->
+<!--   </div>-->
+<!-- </div>-->
+<!--</section>-->

@@ -1,0 +1,40 @@
+{
+  "name": "dipsims",
+  "version": "1.0.0",
+  "description": "SIMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@code.pie.ng:daaef/dipsims.git"
+  },
+  "author": "root",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-preset-env": "^1.6.1",
+    "faker": "^4.1.0",
+    "grunt": "^1.0.1",
+    "jest": "^21.2.1",
+    "jest-cli": "^21.2.1",
+    "puppeteer": "^0.13.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "angular-file-input": "^1.0.2",
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-nodeunit": "^1.0.0",
+    "grunt-contrib-uglify": "^3.2.1",
+    "ng-upload": "^0.1.0"
+  },
+  "keywords": [
+    "SIMS"
+  ]
+}

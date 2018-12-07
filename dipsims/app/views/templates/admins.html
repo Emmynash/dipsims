@@ -1,0 +1,250 @@
+ <section class="content-header">
+    <h1>
+        <i class="fa fa-gears"></i> {{phrase.Administrators}}
+    </h1>
+</section>
+
+<section class="content" ng-show="views.list">
+  <a ng-click="changeView('add')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.addAdministrator}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.listAdministrators}}</h3>
+          <div class="box-tools">
+              <div class="input-group">
+                <input type="text" name="table_search" ng-model="searchText" placeholder="{{phrase.Search}}" class="form-control input-sm">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody><tr>
+                  <th>{{phrase.name}}</th>
+                  <th>{{phrase.username}}</th>
+                  <th>{{phrase.email}}</th>
+                  <th>{{phrase.Operations}}</th>
+              </tr>
+              <tr ng-repeat="admin in admins | filter:searchText">
+                  <td>
+                      <img alt="{{admin.fullName}}" class="user-image img-circle" style="width:35px; height:35px;" ng-src="{{'dashboard/profileImage/'+admin.id}}">
+                      {{admin.fullName}}
+                  </td>
+                  <td>
+                      {{admin.username}}
+                      <br/>
+                      <span ng-show="admin.customPermissionsType == 'full'" style="">{{phrase.fullPerm}}</span>
+                      <span ng-show="admin.customPermissionsType != 'full'">{{phrase.customPerm}}</span>
+                  </td>
+                  <td>{{admin.email}}</td>
+                  <td>
+                    <a ng-click="edit(admin.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.Edit}}" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-click="remove(admin,$index)" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+              <tr ng-show="!admins.length"><td class="noTableData" colspan="5">{{phrase.noAdministrators}}</td></tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelAdd}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.addAdministrator}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="addAdmin" role="form" ng-upload="saveAdd(content)" method="post" action="admins" novalidate>
+        <div class="form-group" ng-class="{'has-error': addAdmin.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.FullName}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="{{phrase.FullName}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.username.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.username}} *</label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" placeholder="{{phrase.username}}" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.email}} *</label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="{{phrase.email}}" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.password.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.password}} *</label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" class="form-control" placeholder="{{phrase.password}}" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Photo}}</label>
+          <div class="col-sm-10">
+            <input type="file" name="photo">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.customPermissionsType.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Permissions}}</label>
+          <div class="col-sm-10">
+              <div class="radio">
+                  <label>
+                      <input type="radio" name="customPermissionsType" value="full" ng-model="form.customPermissionsType">
+                      {{phrase.fullPerm}}
+                  </label>
+              </div>
+              <div class="radio">
+                  <label>
+                      <input type="radio" name="customPermissionsType" value="custom" ng-model="form.customPermissionsType">
+                      {{phrase.customPerm}}
+                  </label>
+              </div>
+          </div>
+        </div>
+        <div class="form-group" ng-show="form.customPermissionsType == 'custom'">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Permissions}}</label>
+          <div class="col-sm-10">
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.staticPages" value="staticPages"> {{phrase.staticPages}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.classSch" value="classSch"> {{phrase.classSch}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Attendance" value="Attendance"> {{phrase.Attendance}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.staffAttendance" value="staffAttendance"> {{phrase.staffAttendance}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.HostelManage" value="HostelManage"> {{phrase.HostelManage}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Library" value="Library"> {{phrase.Library}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.mediaCenter" value="mediaCenter"> {{phrase.mediaCenter}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.teachers" value="teachers"> {{phrase.teachers}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.students" value="students"> {{phrase.students}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.parents" value="parents"> {{phrase.parents}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.gradeLevels" value="gradeLevels"> {{phrase.gradeLevels}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.studyMaterial" value="studyMaterial"> {{phrase.studyMaterial}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Assignments" value="Assignments"> {{phrase.Assignments}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.examsList" value="examsList"> {{phrase.examsList}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.onlineExams" value="onlineExams"> {{phrase.onlineExams}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.newsboard" value="newsboard"> {{phrase.newsboard}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.events" value="events"> {{phrase.events}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.accounting" value="accounting"> {{phrase.accounting}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Transportation" value="Transportation"> {{phrase.Transportation}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.classes" value="classes"> {{phrase.classes}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Subjects" value="Subjects"> {{phrase.Subjects}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Reports" value="Reports"> {{phrase.Reports}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.academicyears" value="academicyears"> {{phrase.academicyears}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Promotion" value="Promotion"> {{phrase.Promotion}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.mailsms" value="mailsms"> {{phrase.mailsms}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.mailsmsTemplates" value="mailsmsTemplates"> {{phrase.mailsmsTemplates}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Polls" value="Polls"> {{phrase.Polls}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Dormitories" value="Dormitories"> {{phrase.Dormitories}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.generalSettings" value="generalSettings"> {{phrase.generalSettings}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Languages" value="Languages"> {{phrase.Languages}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Administrators" value="Administrators"> {{phrase.Administrators}} </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="addAdmin.$invalid">{{phrase.addAdministrator}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelEdit}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.editAdministrator}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="editDorm" role="form" ng-upload="saveEdit(content)" method="post" action="{{'admins/' + form.id}}" novalidate>
+        <div class="form-group" ng-class="{'has-error': editDorm.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.FullName}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="{{phrase.FullName}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.username.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.username}} *</label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" placeholder="{{phrase.username}}" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.email}} *</label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="{{phrase.email}}" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.password}}</label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" class="form-control" placeholder="{{phrase.password}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Photo}}</label>
+          <div class="col-sm-10">
+            <input type="file" name="photo">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.customPermissionsType.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Permissions}}</label>
+          <div class="col-sm-10">
+              <div class="radio">
+                  <label>
+                      <input type="radio" name="customPermissionsType" value="full" ng-model="form.customPermissionsType">
+                      {{phrase.fullPerm}}
+                  </label>
+              </div>
+              <div class="radio">
+                  <label>
+                      <input type="radio" name="customPermissionsType" value="custom" ng-model="form.customPermissionsType">
+                      {{phrase.customPerm}}
+                  </label>
+              </div>
+          </div>
+        </div>
+        <div class="form-group" ng-show="form.customPermissionsType == 'custom'">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Permissions}}</label>
+          <div class="col-sm-10">
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.staticPages" ng-checked="hasPermission('staticPages')" value="staticPages"> {{phrase.staticPages}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.classSch" ng-checked="hasPermission('classSch')" value="classSch"> {{phrase.classSch}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Attendance" ng-checked="hasPermission('Attendance')" value="Attendance"> {{phrase.Attendance}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.staffAttendance" ng-checked="hasPermission('staffAttendance')" value="staffAttendance"> {{phrase.staffAttendance}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.HostelManage" ng-checked="hasPermission('HostelManage')" value="HostelManage"> {{phrase.HostelManage}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Library" ng-checked="hasPermission('Library')" value="Library"> {{phrase.Library}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.mediaCenter" ng-checked="hasPermission('mediaCenter')" value="mediaCenter"> {{phrase.mediaCenter}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.teachers" ng-checked="hasPermission('teachers')" value="teachers"> {{phrase.teachers}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.students" ng-checked="hasPermission('students')" value="students"> {{phrase.students}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.parents" ng-checked="hasPermission('parents')" value="parents"> {{phrase.parents}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.gradeLevels" ng-checked="hasPermission('gradeLevels')" value="gradeLevels"> {{phrase.gradeLevels}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.studyMaterial" ng-checked="hasPermission('studyMaterial')" value="studyMaterial"> {{phrase.studyMaterial}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Assignments" ng-checked="hasPermission('Assignments')" value="Assignments"> {{phrase.Assignments}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.examsList" ng-checked="hasPermission('examsList')" value="examsList"> {{phrase.examsList}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.onlineExams" ng-checked="hasPermission('onlineExams')" value="onlineExams"> {{phrase.onlineExams}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.newsboard" ng-checked="hasPermission('newsboard')" value="newsboard"> {{phrase.newsboard}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.events" ng-checked="hasPermission('events')" value="events"> {{phrase.events}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.accounting" ng-checked="hasPermission('accounting')" value="accounting"> {{phrase.accounting}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Transportation" ng-checked="hasPermission('Transportation')" value="Transportation"> {{phrase.Transportation}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.classes" ng-checked="hasPermission('classes')" value="classes"> {{phrase.classes}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Subjects" ng-checked="hasPermission('Subjects')" value="Subjects"> {{phrase.Subjects}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Reports" ng-checked="hasPermission('Reports')" value="Reports"> {{phrase.Reports}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.academicyears" ng-checked="hasPermission('academicyears')" value="academicyears"> {{phrase.academicyears}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Promotion" ng-checked="hasPermission('Promotion')" value="Promotion"> {{phrase.Promotion}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.mailsms" ng-checked="hasPermission('mailsms')" value="mailsms"> {{phrase.mailsms}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.mailsmsTemplates" ng-checked="hasPermission('mailsmsTemplates')" value="mailsmsTemplates"> {{phrase.mailsmsTemplates}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Polls" ng-checked="hasPermission('Polls')" value="Polls"> {{phrase.Polls}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Dormitories" ng-checked="hasPermission('Dormitories')" value="Dormitories"> {{phrase.Dormitories}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.generalSettings" ng-checked="hasPermission('generalSettings')" value="generalSettings"> {{phrase.generalSettings}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Languages" ng-checked="hasPermission('Languages')" value="Languages"> {{phrase.Languages}} </label>
+              <label class="col-sm-4"><input type="checkbox" name="customPermissions[]" ng-model="form.customPermissions.Administrators" ng-checked="hasPermission('Administrators')" value="Administrators"> {{phrase.Administrators}} </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="editDorm.$invalid">{{phrase.editAdministrator}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

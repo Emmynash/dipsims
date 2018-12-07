@@ -1,0 +1,186 @@
+ <section class="content-header">
+    <h1>
+        <i class="fa fa-check-square-o"></i> {{phrase.Hostel}}
+    </h1>
+</section>
+
+
+<section class="content" ng-show="views.list">
+  <a ng-click="changeView('add')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.AddHostel}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.ListHostel}}</h3>
+          <div class="box-tools">
+              <div class="input-group">
+                <input type="text" name="table_search" ng-model="searchText" placeholder="{{phrase.Search}}" class="form-control input-sm">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody><tr>
+                  <th>{{phrase.HostelTitle}}</th>
+                  <th>{{phrase.Hosteltype}}</th>
+                  <th>{{phrase.Address}}</th>
+                  <th>{{phrase.Manager}}</th>
+                  <th>{{phrase.Operations}}</th>
+              </tr>
+              <tr ng-repeat="hostel in hostelList | filter:searchText">
+                  <td>{{hostel.hostelTitle}}</td>
+                  <td>{{hostel.hostelType}}</td>
+                  <td>{{hostel.hostelAddress}}</td>
+                  <td>{{hostel.hostelManager}}</td>
+                  <td>
+                    <a ng-click="listSub(hostel.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.listSubs}}" tooltip><i class="fa fa-list"></i></a>
+                    <a ng-click="edit(hostel.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.Edit}}" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-click="remove(hostel,$index)" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+              <tr ng-show="!hostelList.length"><td class="noTableData" colspan="6">{{phrase.noHostel}}</td></tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelAdd}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.AddHostel}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="addHostel" role="form" ng-submit="saveAdd()" novalidate>
+        <div class="form-group" ng-class="{'has-error': addHostel.hostelTitle.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.HostelTitle}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="hostelTitle" ng-model="form.hostelTitle" class="form-control" required placeholder="{{phrase.HostelTitle}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addHostel.hostelType.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Hosteltype}} *</label>
+          <div class="col-sm-10">
+              <select class="form-control" ng-model="form.hostelType" name="hostelType" required>
+              <option disabled selected value="">Select Hostel Type</option>
+                  <option value="Boys">{{phrase.Boys}}</option>
+                  <option value="Girls">{{phrase.Girls}}</option>
+                  <option value="Mixed">{{phrase.Mixed}}</option>
+              </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Address}}</label>
+          <div class="col-sm-10">
+              <textarea name="hostelAddress" class="form-control" ng-model="form.hostelAddress" placeholder="{{phrase.Address}}"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Manager}}</label>
+          <div class="col-sm-10">
+              <textarea name="hostelManager" class="form-control" ng-model="form.hostelManager" placeholder="{{phrase.Manager}}"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Notes}}</label>
+          <div class="col-sm-10">
+              <textarea name="hostelNotes" class="form-control" ng-model="form.hostelNotes" placeholder="{{phrase.Notes}}"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="addHostel.$invalid">{{phrase.AddHostel}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelEdit}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.EditHostel}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="editGrade" role="form" ng-submit="saveEdit()" novalidate>
+          <div class="form-group" ng-class="{'has-error': editGrade.hostelTitle.$invalid}">
+            <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.HostelTitle}} * </label>
+            <div class="col-sm-10">
+              <input type="text" name="hostelTitle" ng-model="form.hostelTitle" class="form-control" required placeholder="{{phrase.HostelTitle}}">
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': editGrade.hostelType.$invalid}">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Hosteltype}} *</label>
+            <div class="col-sm-10">
+                <select class="form-control" ng-model="form.hostelType" name="hostelType" required>
+                    <option value="Boys">{{phrase.Boys}}</option>
+                    <option value="Girls">{{phrase.Girls}}</option>
+                    <option value="Mixed">{{phrase.Mixed}}</option>
+                </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Address}}</label>
+            <div class="col-sm-10">
+                <textarea name="hostelAddress" class="form-control" ng-model="form.hostelAddress" placeholder="{{phrase.Address}}"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Manager}}</label>
+            <div class="col-sm-10">
+                <textarea name="hostelManager" class="form-control" ng-model="form.hostelManager" placeholder="{{phrase.Manager}}"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Notes}}</label>
+            <div class="col-sm-10">
+                <textarea name="hostelNotes" class="form-control" ng-model="form.hostelNotes" placeholder="{{phrase.Notes}}"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default" ng-disabled="editGrade.$invalid">{{phrase.EditHostel}}</button>
+            </div>
+          </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.listSubs">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.listSubs}}</h3>
+          <div class="box-tools">
+              <div class="input-group">
+                <input type="text" name="table_search" ng-model="searchText" placeholder="{{phrase.Search}}" class="form-control input-sm">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody><tr>
+                  <th>{{phrase.FullName}}</th>
+                  <th>{{phrase.username}}</th>
+                  <th>{{phrase.role}}</th>
+                  <th>{{phrase.email}}</th>
+                  <th>{{phrase.Contact}}</th>
+              </tr>
+              <tr ng-repeat="subscriber in hostelSubList | filter:searchText">
+                  <td>
+                      <img alt="{{subscriber.fullName}}" class="user-image img-circle" style="width:35px; height:35px;" ng-src="{{'dashboard/profileImage/'+subscriber.id}}">
+                      {{subscriber.fullName}}
+                  </td>
+                  <td>{{subscriber.username}}</td>
+                  <td>{{subscriber.role}}</td>
+                  <td>{{subscriber.email}}</td>
+                  <td>{{subscriber.phoneNo}} <br/> {{subscriber.mobileNo}}</td>
+              </tr>
+              <tr ng-show="!hostelSubList.length"><td class="noTableData" colspan="5">{{phrase.noMatches}}</td></tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>

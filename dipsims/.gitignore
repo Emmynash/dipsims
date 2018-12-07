@@ -1,0 +1,12 @@
+.tmp/
+app/storage/views
+npm-debug.log
+uploads/assignments/*
+uploads/assignmentsAnswers/*
+uploads/books/*
+uploads/cache/*
+uploads/media/*
+uploads/profile/*
+uploads/studyMaterial/*
+node_modules
+.env

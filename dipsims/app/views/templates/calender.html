@@ -1,0 +1,23 @@
+<section class="content-header">
+    <h1>
+        <i class="fa fa-calendar"></i> {{phrase.Calender}}
+    </h1>
+</section>
+
+<section class="calbox content">
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <div class="row">
+              <div class="col-md-4" style="display:none">
+                  <h3 class="box-title">{{phrase.Calenderlist}}</h3>
+              </div>
+              <div class="col-md-3 col-md-offset-5" style="display:none">
+                  <a ng-click="changeView('add')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">Add new event</a>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <div id="calendar" calendar-box></div>
+      </div>
+  </div>
+</section>

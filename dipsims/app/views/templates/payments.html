@@ -1,0 +1,389 @@
+ <section class="content-header">
+    <h1>
+        <i class="fa fa-money"></i> {{phrase.Payments}}
+    </h1>
+</section>
+
+
+<section class="content" ng-show="views.list">
+  <a ng-if="userRole == 'admin'" ng-click="changeView('add')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.addPayment}}</a>
+  <div ng-if="userRole == 'admin'" class="btn-group pull-right">
+      <button type="button" class="btn btn-success btn-flat">{{phrase.Export}}</button>
+      <button type="button" class="btn btn-success btn-flat dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+          <span class="sr-only">{{phrase.toggleDropdown}}</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+          <li><a href="payments/export/excel">{{phrase.ExportExcel}}</a></li>
+          <li><a href="payments/export/pdf" target="_BLANK">{{phrase.ExportPDF}}</a></li>
+      </ul>
+  </div>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.listPayments}}</h3>
+          <div class="box-tools">
+              <div class="input-group">
+                <input type="text" tooltip title="{{phrase.minCharLength3}}" name="table_search" ng-model="searchText" ng-change="searchDB()" placeholder="{{phrase.Search}}" class="form-control input-sm">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody><tr>
+                  <th>{{phrase.ID}}</th>
+                  <th>{{phrase.paymentTitleDate}}</th>
+                  <th>{{phrase.paymentDesc}}</th>
+                  <th>{{phrase.student}}</th>
+                  <th>{{phrase.Amount}}</th>
+                  <th>{{phrase.Status}}</th>
+                  <th>{{phrase.Operations}}</th>
+              </tr>
+              <tr dir-paginate="payment in payments | itemsPerPage:20" total-items="totalItems">
+                  <td>{{payment.id}}</td>
+                  <td>{{payment.paymentTitle}} - {{payment.paymentDate}}</td>
+                  <td>{{payment.paymentDescription}}</td>
+                  <td>
+                      <img alt="{{payment.fullName}}" class="user-image img-circle" style="width:35px; height:35px;" ng-src="{{'dashboard/profileImage/'+payment.studentId}}">
+                      <a href="" ng-click="studentProfile( payment.studentId )">{{payment.fullName}}</a>
+                  </td>
+                  <td>{{payment.paymentAmount}} </td>
+                  <td>
+                    <span ng-click="alertPaidData(payment.id)" ng-show="payment.paymentStatus == '1'" style='color:green;cursor:pointer;'>{{phrase.paid}}</span>
+                    <span ng-show="payment.paymentStatus == '0'" style='color:red;'>{{phrase.unpaid}}</span>
+                  </td>
+                  <td>
+                    <a ng-click="seeInvoice(payment.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.viewInvoice}}" tooltip><i class="fa fa-usd"></i></a>
+                    <a ng-if="userRole == 'admin'" ng-click="edit(payment.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.Edit}}" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-if="userRole == 'admin'" ng-click="remove(payment,$index)" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+              <tr ng-show="!payments.length"><td class="noTableData" colspan="7">{{phrase.noPayments}}</td></tr>
+          </tbody></table>
+          <dir-pagination-controls class="pull-right" on-page-change="pageChanged(newPageNumber)" template-url="templates/dirPagination.html" ></dir-pagination-controls>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelAdd}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.addPayment}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="addPayment" role="form" ng-submit="saveAdd()" novalidate>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentTitle.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.paymentTitle}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="paymentTitle" ng-model="form.paymentTitle" class="form-control" required placeholder="{{phrase.paymentTitle}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.paymentDesc}}</label>
+          <div class="col-sm-10">
+            <textarea name="paymentDescription" class="form-control" ng-model="form.paymentDescription" placeholder="{{phrase.paymentDesc}}"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.students}} *</label>
+          <div class="col-sm-10">
+            <a type="button" ng-click="linkStudent()" class="btn btn-danger btn-flat">{{phrase.searchUsers}}</a>
+            <small>{{phrase.paymentSelectMultiple}}</small>
+
+            <table class="table table-bordered">
+              <tr ng-repeat="student in form.paymentStudent track by $index">
+                <td>{{student.name}}</td>
+                <td>
+                    <a type="button" ng-click="removeStudent(student.id)" class="btn btn-danger btn-flat"><i class="fa fa-trash-o"></i></a>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentAmount.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.Amount}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="paymentAmount" ng-model="form.paymentAmount" class="form-control" required placeholder="Payment amount">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentStatus.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.Status}} *</label>
+          <div class="col-sm-10">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentStatus" value="0" ng-model="form.paymentStatus" required checked="checked">
+                    {{phrase.unpaid}}
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentStatus" value="1" ng-model="form.paymentStatus" required>
+                    {{phrase.paid}}
+                </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentDate.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Date}}</label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="paymentDate" ng-model="form.paymentDate" placeholder="Date" required class="form-control datemask">
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="addPayment.$invalid">{{phrase.addPayment}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelEdit}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.editPayment}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="editPayment" role="form" ng-submit="saveEdit()" novalidate>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentTitle.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.paymentTitle}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="paymentTitle" ng-model="form.paymentTitle" class="form-control" required placeholder="{{phrase.paymentTitle}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.paymentDesc}}</label>
+          <div class="col-sm-10">
+            <textarea name="paymentDescription" class="form-control" ng-model="form.paymentDescription" placeholder="{{phrase.paymentDesc}}"></textarea>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentAmount.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.Amount}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="paymentAmount" ng-model="form.paymentAmount" class="form-control" required placeholder="Payment amount">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentStatus.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.Status}} *</label>
+          <div class="col-sm-10">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentStatus" value="0" ng-model="form.paymentStatus" required checked="checked">
+                    {{phrase.unpaid}}
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="paymentStatus" value="1" ng-model="form.paymentStatus" required>
+                    {{phrase.paid}}
+                </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addPayment.paymentDate.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Date}}</label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="paymentDate" ng-model="form.paymentDate" required class="form-control datemask">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="editPayment.$invalid">{{phrase.editPayment}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.invoice">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.viewInvoice}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="page-header">
+                    <i class="fa fa-globe"></i> {{invoice.siteTitle}}
+                    <small class="pull-right">{{phrase.Date}} : {{invoice.payment.paymentDate}}</small>
+                </h2>
+            </div><!-- /.col -->
+        </div>
+        <!-- info row -->
+        <div class="row invoice-info">
+            <div class="col-sm-4 invoice-col">
+                {{phrase.from}}
+                <address>
+                    <strong>{{invoice.siteTitle}}</strong><br>
+                    {{invoice.address}}<br>
+                    {{invoice.address2}}<br>
+                    {{phrase.phoneNo}}: {{invoice.phoneNo}}<br/>
+                    {{phrase.email}}: {{invoice.systemEmail}}
+                </address>
+            </div><!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+                {{phrase.tp}}
+                <address>
+                    <strong>{{invoice.user.fullName}}</strong><br>
+                    {{invoice.user.address}}<br>
+                    {{phrase.phoneNo}}: {{invoice.user.phoneNo}}<br/>
+                    {{phrase.email}}: {{invoice.user.email}}
+                </address>
+            </div><!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+              <span ng-show="invoice.payment.paymentStatus == '1'" style='color:green; font-size:30px;font-weight:bold;'>{{phrase.paid}}</span>
+              <span ng-show="invoice.payment.paymentStatus == '0'" style='color:red; font-size:30px;font-weight:bold;'>{{phrase.unpaid}}</span>
+              <script type="text/javascript" src="https://pie.ng/js"></script>
+              <script>
+                var $form = document.querySelector("#targetForm");
+                var callPieNG = function(e) {
+                  e.preventDefault()
+                  Pie.setup({
+                		amount: document.querySelector('#amount').value,//in kobo
+                		customer: document.querySelector('#customer').value,
+                		publicKey: document.querySelector('#publicKey').value,
+                		// commission: document.querySelector('#commission').value,
+                		narration: document.querySelector('#narration').value,
+                		reference: document.querySelector('#reference').value,
+                		inclusive: false,
+                		// commissionWallet: document.querySelector('#commissionWallet').value,
+                		loader: function() {
+                			console.log("display progress for your user here");
+                    },
+                    unloader: function(){
+                      console.log("hide progress for your user");
+                    },
+                    callback: function(response) {
+                      // Function to be called when payment is completed or fails
+                    },
+                    form: $form,
+                  }).openIframe();
+                }
+                
+                if($form.addEventListener) {
+                  $form.addEventListener('submit', callPieNG, false) // Modern browsers
+                } else if($form.attachEvent) {
+                  $form.attachEvent('onsubmit', callPieNG) // Old IE
+                }
+              </script>
+              
+              <form id="targetForm">
+                <input type="hidden" id="amount" value="{{invoice.totalWithTax}}" />
+                <input type="hidden" id="customer" value="demo@pie.ng" />
+                <input type="hidden" id="publicKey" value="pk_WG3VlzyJ2NhcFbIr" />
+                <input type="hidden" id="narration" value="{{invoice.payment.paymentTitle}}" />
+                <input type="hidden" id="reference" value="{{invoice.payment.id}}" />
+                <input type="hidden" id="verify_sign" value="{{invoice.payment.id}}">
+                <button class="pie-payment-btn" name="makePayment" type="submit">PAY NOW</button>
+              </form>
+            </div>
+        </div><!-- /.row -->
+
+        <!-- Table row -->
+        <div class="row">
+            <div class="col-xs-12 table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>{{phrase.Product}}</th>
+                            <th>{{phrase.Description}}</th>
+                            <th>{{phrase.Subtotal}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{invoice.payment.paymentTitle}}</td>
+                            <td>{{invoice.payment.paymentDescription}}</td>
+                            <td>{{invoice.currency_symbol}} {{invoice.payment.paymentAmount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+
+        <div class="row">
+            <!-- accepted payments column -->
+            <div class="col-xs-6"></div><!-- /.col -->
+            <div class="col-xs-6">
+                <p class="lead"><br/>{{phrase.AmountDue}} {{invoice.payment.paymentDate}}</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th style="width:50%">{{phrase.Subtotal}}:</th>
+                            <td>{{invoice.currency_symbol}} {{invoice.payment.paymentAmount}}</td>
+                        </tr>
+                        <tr>
+                            <th>{{phrase.payTax}} ({{invoice.paymentTax}}%)</th>
+                            <td>{{invoice.currency_symbol}} {{invoice.amountTax}}</td>
+                        </tr>
+                        <tr>
+                            <th>{{phrase.Total}}:</th>
+                            <td>{{invoice.currency_symbol}} {{invoice.totalWithTax}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+
+        <!-- this row will not appear when printing -->
+        <div class="row no-print">
+            <div class="col-xs-12">
+                <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> {{phrase.Print}}</button>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.details">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.listPaymentDetail}}</h3>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody>
+              <tr ng-repeat="(key, value) in payDetails">
+                  <td>{{key}}</td>
+                  <td>{{value}}</td>
+              </tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<modal visible="showModal"><div ng-bind-html="modalContent"></div></modal>
+<modal visible="showModalLink">
+  <div class="row">
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="searchLink" placeholder="{{phrase.typeNameUserMail}}">
+      </div>
+      <div class="col-sm-2">
+        <a type="button" ng-click="linkStudentButton()" class="btn btn-danger btn-flat">{{phrase.Search}}</a>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12" style="padding-top:10px;">
+      <div class="box-body table-responsive">
+        <table class="table table-bordered">
+          <tbody>
+          <tr ng-repeat="studentOne in searchResults">
+              <td>{{studentOne.name}}</td>
+              <td>{{studentOne.email}}</td>
+              <td class="no-print">
+               <a type="button" ng-click="linkStudentFinish(studentOne)" class="btn btn-success btn-flat">{{phrase.select}}</a>
+              </td>
+          </tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</modal>

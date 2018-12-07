@@ -1,0 +1,94 @@
+<section class="content-header">
+   <h1>
+       <i class="fa fa-check"></i> {{phrase.staffAttendance}}
+   </h1>
+</section>
+
+<section class="content" ng-show="views.list">
+ <div class="box col-xs-12">
+   <div class="box-header">
+       <h3 class="box-title">{{phrase.selectAttendance}}</h3>
+   </div>
+   <div class="box-body table-responsive">
+     <form class="form-horizontal" ng-submit="startAttendance()" name="attendance" novalidate>
+       <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': attendance.attendanceDay.$invalid}">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Date}} *</label>
+         <div class="col-sm-10">
+           <input type="text" name="attendanceDay" ng-model="form.attendanceDay" placeholder="Select a Date" class="form-control datemask" required>
+         </div>
+       </div>
+       <div date-picker selector=".datemask" ></div>
+       <div class="form-group">
+         <div class="col-sm-offset-2 col-sm-10">
+           <button type="submit" class="btn btn-default" ng-disabled="attendance.$invalid">{{phrase.controlAttendance}}</button>
+         </div>
+       </div>
+     </form>
+   </div>
+ </div>
+</section>
+
+<section class="content" ng-show="views.lists">
+ <a ng-click="changeView('list')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+ <div class="box col-xs-12">
+   <div class="box-header">
+     <h3 class="box-title">Staff Attendance - {{phrase.Date}} : {{form.attendanceDay}}</h3>
+   </div>
+   <div class="box-body table-responsive">
+     <form class="form-horizontal" ng-submit="saveAttendance()" name="form" novalidate>
+       <table class="table table-bordered">
+           <tbody><tr>
+               <th>{{phrase.teacher}}</th>
+               <th>{{phrase.Attendance}}</th>
+           </tr>
+           <tr>
+               <th>Select All</th>
+               <th>
+                   <input type="button" ng-click="selectAll(1)" class="btn btn-info btn-sm" value="{{phrase.Present}}">
+                   <input type="button" ng-click="selectAll(0)" class="btn btn-info btn-sm" value="{{phrase.Absent}}">
+                   <input type="button" ng-click="selectAll(2)" class="btn btn-info btn-sm" value="{{phrase.Late}}">
+                   <input type="button" ng-click="selectAll(3)" class="btn btn-info btn-sm" value="{{phrase.LateExecuse}}">
+               </th>
+           </tr>
+           <tr ng-repeat="teacher in teachers | object2Array | orderBy:'studentRollId'">
+               <td>{{teacher.name}}</td>
+               <td>
+                 <div>
+                   <div class="radio" ng-show="teacher.vacation">
+                       Vacation requested :
+                       <label>
+                           <input type="radio" ng-model="teacher.vacationStat" value="1"> {{phrase.acceptedVacation}}
+                       </label>
+                       <label>
+                           <input type="radio" ng-model="teacher.vacationStat" value="0"> {{phrase.rejectedVacation}}
+                       </label>
+                   </div>
+                   <div class="radio" ng-show="!teacher.vacation || teacher.vacationStat == '0'">
+                       <label>
+                           <input type="radio" ng-model="teacher.attendance" value="1"> {{phrase.Present}}
+                       </label>
+                       <label>
+                           <input type="radio" ng-model="teacher.attendance" value="0"> {{phrase.Absent}}
+                       </label>
+                       <label>
+                           <input type="radio" ng-model="teacher.attendance" value="2"> {{phrase.Late}}
+                       </label>
+                       <label>
+                           <input type="radio" ng-model="teacher.attendance" value="3"> {{phrase.LateExecuse}}
+                       </label>
+                   </div>
+                 </div>
+               </td>
+           </tr>
+         </tbody>
+       </table>
+       <br/>
+       <div class="form-group">
+         <div class="col-sm-offset-2 col-sm-10">
+           <button type="submit" class="btn btn-default">{{phrase.saveAttendance}}</button>
+         </div>
+       </div>
+     </form>
+   </div>
+ </div>
+</section>

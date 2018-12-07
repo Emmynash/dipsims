@@ -1,0 +1,446 @@
+ <section class="content-header">
+    <h1>
+        <i class="fa fa-user"></i> {{phrase.parents}}
+    </h1>
+</section>
+
+
+<section class="content" ng-show="views.list">
+  <a ng-click="changeView('add')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15 no-print">{{phrase.AddParent}}</a>
+  <a ng-click="waitingApproval()" class="floatRTL btn btn-success btn-flat pull-right marginBottom15 no-print">{{phrase.waitingApproval}}</a>
+
+  <div ng-if="userRole == 'admin'" class="btn-group pull-right no-print">
+      <button type="button" class="btn btn-success btn-flat">{{phrase.Export}}</button>
+      <button type="button" class="btn btn-success btn-flat dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+          <span class="sr-only">{{phrase.toggleDropdown}}</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+          <li><a href="parents/export">{{phrase.ExportExcel}}</a></li>
+          <li><a href="parents/exportpdf" target="_BLANK">{{phrase.ExportPDF}}</a></li>
+      </ul>
+  </div>
+  <div ng-if="userRole == 'admin'" class="btn-group pull-right no-print">
+      <button type="button" class="btn btn-success btn-flat">{{phrase.Import}}</button>
+      <button type="button" class="btn btn-success btn-flat dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+          <span class="sr-only">{{phrase.toggleDropdown}}</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+          <li><a ng-click="import('excel')">{{phrase.ImportExcel}}</a></li>
+      </ul>
+  </div>
+
+  <a href="javascript:window.print()" class="btn btn-success btn-flat pull-right marginBottom15 no-print">{{phrase.Print}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.listParents}}</h3>
+          <div class="box-tools">
+              <div class="input-group">
+                  <input type="text" tooltip title="{{phrase.minCharLength3}}" name="table_search" ng-model="searchText" ng-change="searchDB()" placeholder="{{phrase.Search}}" class="form-control input-sm">
+                  <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody><tr>
+                  <th>{{phrase.ID}}</th>
+                  <th>{{phrase.FullName}}</th>
+                  <th>{{phrase.username}}</th>
+                  <th>{{phrase.email}}</th>
+                  <th class="no-print">{{phrase.Operations}}</th>
+              </tr>
+              <tr dir-paginate="parent in stparents | itemsPerPage:20" total-items="totalItems">
+                  <td>{{parent.id}}</td>
+                  <td>
+                      <img alt="{{parent.fullName}}" class="user-image img-circle" style="width:35px; height:35px;" ng-src="{{'dashboard/profileImage/'+parent.id}}">
+                      <a href="" ng-click="parentProfile( parent.id )">{{parent.fullName}}</a>
+                  </td>
+                  <td>{{parent.username}}</td>
+                  <td>{{parent.email}}</td>
+                  <td class="no-print">
+                    <a ng-click="edit(parent.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.Edit}}" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-click="remove(parent,$index)" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+              <tr ng-show="!stparents.length"><td class="noTableData" colspan="5">{{phrase.noParents}}</td></tr>
+          </tbody></table>
+          <dir-pagination-controls class="pull-right" on-page-change="pageChanged(newPageNumber)" template-url="templates/dirPagination.html" ></dir-pagination-controls>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.approval">
+   <a ng-click="changeView('list')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.waitingApproval}}</h3>
+          <div class="box-tools">
+              <div class="input-group">
+                <input type="text" name="table_search" ng-model="searchText" placeholder="{{phrase.Search}}" class="form-control input-sm">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody><tr>
+                  <th>{{phrase.ID}}</th>
+                  <th>{{phrase.FullName}}</th>
+                  <th>{{phrase.username}}</th>
+                  <th>{{phrase.email}}</th>
+                  <th>{{phrase.Operations}}</th>
+              </tr>
+              <tr ng-repeat="parent in stparentsApproval | filter:searchText">
+                  <td>{{parent.id}}</td>
+                  <td><a href="" ng-click="parentProfile( parent.id )">{{parent.fullName}}</a></td>
+                  <td>{{parent.username}}</td>
+                  <td>{{parent.email}}</td>
+                  <td>
+                    <a ng-click="approve(parent.id)" type="button" class="btn btn-success btn-flat" title="Approve" tooltip><i class="fa fa-check-square-o"></i></a>
+                    <a ng-click="edit(parent.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.Edit}}" tooltip><i class="fa fa-pencil"></i></a>
+                    <a ng-click="remove(parent,$index)" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a>
+                  </td>
+              </tr>
+          </tbody></table>
+       </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelAdd}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.AddParent}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" ng-upload="saveAdd(content)" method="post" action="parents" name="addAdmin" role="form" novalidate>
+        <div class="form-group" ng-class="{'has-error': addAdmin.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.FullName}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="{{phrase.FullName}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.username.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.username}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" required placeholder="{{phrase.username}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.email}} *</label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="{{phrase.email}}" required>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.password.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.password}} *</label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" required class="form-control" placeholder="{{phrase.password}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Gender}}</label>
+          <div class="col-sm-10">
+
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="male" ng-model="form.gender">
+                    {{phrase.Male}}
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="female" ng-model="form.gender">
+                    {{phrase.Female}}
+                </label>
+            </div>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Birthday}}</label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="birthday" ng-model="form.birthday" class="form-control datemask">
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Address}}</label>
+          <div class="col-sm-10">
+            <input type="text" name="address" class="form-control" ng-model="form.address" placeholder="{{phrase.Address}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.phoneNo}}</label>
+          <div class="col-sm-10">
+            <input type="text" name="phoneNo" class="form-control" ng-model="form.phoneNo" placeholder="{{phrase.phoneNo}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addAdmin.mobileNo.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.mobileNo}}</label>
+          <div class="col-sm-10">
+            <input type="text" mobile-number name="mobileNo" class="form-control" ng-model="form.mobileNo" placeholder="{{phrase.mobileNo}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Profession}}</label>
+          <div class="col-sm-10">
+            <input type="text" name="parentProfession" class="form-control" ng-model="form.parentProfession" placeholder="{{phrase.Profession}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Photo}}</label>
+          <div class="col-sm-10">
+            <input type="file" name="photo">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.studentDetails}}</label>
+          <div class="col-sm-10">
+            <a type="button" ng-click="linkStudent()" class="btn btn-danger btn-flat">Link Student</a>
+            <input type="text" name="linkedStudentsSer" ng-model="form.studentInfoSer" style="display:none;">
+            <div class="row" ng-repeat="studentOne in form.studentInfo track by $index">
+              <div class="col-xs-4"><input type="text" class="form-control" disabled="disabled" name="studentP[]" ng-model="studentOne.student"></div>
+              <div class="col-xs-4"><input type="text" class="form-control" ng-model="studentOne.relation" name="relationR[]" placeholder="{{phrase.Relation}}" ng-change="monitorParentChange()"></div>
+              <a type="button" ng-click="removeStudent(studentOne.id)" class="btn btn-danger btn-flat"><i class="fa fa-trash-o"></i></a></li>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="_token" value="{{CSRF_TOKEN}}">
+            <button type="submit" class="btn btn-default" ng-disabled="addAdmin.$invalid || $isUploading">{{phrase.AddParent}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelEdit}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.editParent}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="editDorm" role="form" ng-upload="saveEdit(content)" method="post" action="{{'parents/' + form.id}}" novalidate>
+        <div class="form-group" ng-class="{'has-error': editDorm.fullName.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.FullName}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="fullName" ng-model="form.fullName" class="form-control" required placeholder="{{phrase.FullName}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.username.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.username}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="username" ng-model="form.username" class="form-control" required placeholder="{{phrase.username}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.email.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.email}} *</label>
+          <div class="col-sm-10">
+            <input type="email" name="email" ng-model="form.email" class="form-control" placeholder="{{phrase.email}}" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.password}} *</label>
+          <div class="col-sm-10">
+            <input type="password" name="password" ng-model="form.password" class="form-control" placeholder="{{phrase.password}}">
+            <p style="color: red">**Leave Empty to remain unchanged**</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Gender}}</label>
+          <div class="col-sm-10">
+
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="male" ng-model="form.gender">
+                    {{phrase.Male}}
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="gender" value="female" ng-model="form.gender">
+                    {{phrase.Female}}
+                </label>
+            </div>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Birthday}}</label>
+          <div class="col-sm-10">
+            <input type="text" id="datemask" name="birthday" ng-model="form.birthday" class="form-control datemask">
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Address}}</label>
+          <div class="col-sm-10">
+            <input type="text" name="address" class="form-control" ng-model="form.address" placeholder="{{phrase.Address}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.phoneNo}}</label>
+          <div class="col-sm-10">
+            <input type="text" name="phoneNo" class="form-control" ng-model="form.phoneNo" placeholder="{{phrase.phoneNo}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': editDorm.mobileNo.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.mobileNo}}</label>
+          <div class="col-sm-10">
+            <input type="text" mobile-number name="mobileNo" class="form-control" ng-model="form.mobileNo" value="{{phrase.mobileNo}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Profession}}</label>
+          <div class="col-sm-10">
+            <input type="text" name="parentProfession" class="form-control" ng-model="form.parentProfession" placeholder="{{phrase.Profession}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Photo}}</label>
+          <div class="col-sm-10">
+            <input type="file" name="photo">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.studentDetails}}</label>
+          <div class="col-sm-10">
+            <a type="button" ng-click="linkStudent()" class="btn btn-danger btn-flat">Link Student</a>
+            <input type="text" name="linkedStudentsSer" ng-model="form.studentInfoSer" style="display:none;">
+            <div class="row" ng-repeat="studentOne in form.studentInfo track by $index">
+              <div class="col-xs-4"><input type="text" class="form-control" disabled="disabled" ng-model="studentOne.student"></div>
+              <div class="col-xs-4"><input type="text" class="form-control" ng-model="studentOne.relation" placeholder="{{phrase.Relation}}" ng-change="monitorParentChange()"></div>
+              <a type="button" ng-click="removeStudent(studentOne.id)" class="btn btn-danger btn-flat"><i class="fa fa-trash-o"></i></a></li>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="_token" value="{{CSRF_TOKEN}}">
+            <button type="submit" class="btn btn-default" ng-disabled="editDorm.$invalid || $isUploading">{{phrase.editParent}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.import">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.Import}} {{importType}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" ng-upload="saveImported(content)" method="post" action="{{'parents/import/'+importType}}" name="importData" role="form" novalidate>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.fileToImport}}</label>
+          <div class="col-sm-10">
+            <input type="file" name="excelcsv">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="_token" value="{{CSRF_TOKEN}}">
+            <button type="submit" class="btn btn-default" ng-disabled="importData.$invalid || $isUploading">{{phrase.Import}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.reviewImport">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.Import}} {{importType}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" ng-submit="reviewImportData()" name="importData" role="form" novalidate>
+
+            <h4>{{phrase.failedImport}}</h4>
+            <div class="box-body table-responsive">
+                    <table class="table table-hover">
+                    <tbody><tr>
+                        <th>{{phrase.FullName}}</th>
+                        <th>{{phrase.username}}</th>
+                        <th>{{phrase.email}}</th>
+                        <th>{{phrase.password}}</th>
+                        <th> </th>
+                    </tr>
+                    <tr ng-repeat="student in importReview.revise">
+                        <td>{{student.fullName}}</td>
+                        <td ng-class="{'has-error': student.error.indexOf('username',0) != -1}"><input type="text" name="username" class="form-control mobilenumber" ng-model="student.username"></td>
+                        <td ng-class="{'has-error': student.error.indexOf('email',0) != -1}"><input type="text" name="email" class="form-control mobilenumber" ng-model="student.email"></td>
+                        <td><input type="password" name="password" class="form-control mobilenumber" ng-model="student.password"></td>
+                        <th><a ng-click="removeImport(student,$index,'revise')" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a></th>
+                    </tr>
+                    <tr ng-show="!importReview.revise.length"><td class="noTableData" colspan="6">{{phrase.noTeachers}}</td></tr>
+                </tbody></table>
+            </div>
+
+            <h4>{{phrase.readyImport}}</h4>
+            <div class="box-body table-responsive">
+                    <table class="table table-hover">
+                    <tbody><tr>
+                        <th>{{phrase.FullName}}</th>
+                        <th>{{phrase.username}}</th>
+                        <th>{{phrase.email}}</th>
+                        <th>{{phrase.password}}</th>
+                        <th> </th>
+                    </tr>
+                    <tr ng-repeat="student in importReview.ready">
+                        <td>{{student.fullName}}</td>
+                        <td><input type="text" name="username" class="form-control mobilenumber" ng-model="student.username"></td>
+                        <td><input type="text" name="email" class="form-control mobilenumber" ng-model="student.email"></td>
+                        <td><input type="password" name="password" class="form-control mobilenumber" ng-model="student.password"></td>
+                        <th><a ng-click="removeImport(student,$index,'ready')" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a></th>
+                    </tr>
+                    <tr ng-show="!importReview.ready.length"><td class="noTableData" colspan="6">{{phrase.noTeachers}}</td></tr>
+                </tbody></table>
+            </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">{{phrase.Import}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<modal visible="showModal"><div ng-bind-html="modalContent"></div></modal>
+<modal visible="showModalLink">
+  <div class="row">
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="searchLink" placeholder="Type student name / username / E-mail address">
+      </div>
+      <div class="col-sm-2">
+        <a type="button" ng-click="linkStudentButton()" class="btn btn-danger btn-flat">Search</a>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12" style="padding-top:10px;">
+      <div class="box-body table-responsive">
+        <table class="table table-bordered">
+          <tbody>
+          <tr ng-repeat="studentOne in searchResults">
+              <td>{{studentOne.name}}</td>
+              <td>{{studentOne.email}}</td>
+              <td class="no-print">
+               <a type="button" ng-click="linkStudentFinish(studentOne)" class="btn btn-success btn-flat">{{phrase.select}}</a>
+              </td>
+          </tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</modal>

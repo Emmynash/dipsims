@@ -1,0 +1,518 @@
+<section class="content-header">
+    <h1>
+        <i class="fa fa-pie-chart"></i> {{phrase.Reports}}
+    </h1>
+</section>
+
+<section class="content" ng-show="views.list">
+
+    <br/><br/>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box bg-aqua reportsDiv" ng-click="usersStats()">
+            <span class="info-box-icon"><i class="fa fa-dashboard"></i></span>
+            <div class="info-box-content">
+              <span class="progress-description">{{phrase.UsersStats}}</span>
+            </div><!-- /.info-box-content -->
+          </div><!-- /.info-box -->
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box bg-green reportsDiv" ng-click="stdAttendance()">
+            <span class="info-box-icon"><i class="fa fa-bar-chart"></i></span>
+            <div class="info-box-content">
+              <span class="progress-description">{{phrase.studentAttendance}}</span>
+            </div><!-- /.info-box-content -->
+          </div><!-- /.info-box -->
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12" style="display:none">
+          <div class="info-box bg-yellow reportsDiv" ng-click="changeView('stfAttendance')">
+            <span class="info-box-icon"><i class="fa fa-check"></i></span>
+            <div class="info-box-content">
+              <span class="progress-description">{{phrase.staffAttendance}}</span>
+            </div><!-- /.info-box-content -->
+          </div><!-- /.info-box -->
+        </div>
+         <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box bg-aqua reportsDiv" ng-click="marksheetGenerationPrepare()">
+            <span class="info-box-icon"><i class="fa fa-table"></i></span>
+            <div class="info-box-content">
+              <span class="progress-description">{{phrase.marksheetGen}}</span>
+            </div><!-- /.info-box-content -->
+          </div><!-- /.info-box -->
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12" style="display:none">
+          <div class="info-box bg-red reportsDiv" ng-click="changeView('paymentsReports')">
+            <span class="info-box-icon"><i class="fa fa-check"></i></span>
+            <div class="info-box-content">
+              <span class="progress-description">{{phrase.paymentsReports}}</span>
+            </div><!-- /.info-box-content -->
+          </div><!-- /.info-box -->
+        </div>
+    </div>
+
+    <br/><br/>
+    <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12" style="display:none">
+          <div class="info-box bg-green reportsDiv" ng-click="changeView('stVacation')">
+            <span class="info-box-icon"><i class="fa fa-coffee"></i></span>
+            <div class="info-box-content">
+              <span class="progress-description">{{phrase.studentVacation}}</span>
+            </div><!-- /.info-box-content -->
+          </div><!-- /.info-box -->
+        </div>
+        <div class="col-md-3 col-sm-6 col-xs-12" style="display:none">
+          <div class="info-box bg-yellow reportsDiv" ng-click="changeView('teacherVacation')">
+            <span class="info-box-icon"><i class="fa fa-coffee"></i></span>
+            <div class="info-box-content">
+              <span class="progress-description">{{phrase.teacherVacation}}</span>
+            </div><!-- /.info-box-content -->
+          </div><!-- /.info-box -->
+        </div>
+       
+    </div>
+
+</section>
+
+<section class="content" ng-show="views.usersStats">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.UsersStats}}</h3>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-bordered">
+              <tbody><tr>
+                  <th>{{phrase.user}}</th>
+                  <th>{{phrase.activeUsers}}</th>
+                  <th>{{phrase.inactiveUsers}}</th>
+                  <th>{{phrase.totalUsers}}</th>
+              </tr>
+              <tr>
+                  <td>{{phrase.Administrators}}</td>
+                  <td>{{stats.admins.activated}}</td>
+                  <td>{{stats.admins.inactivated}}</td>
+                  <td>{{stats.admins.total}}</td>
+              </tr>
+              <tr>
+                  <td>{{phrase.teachers}}</td>
+                  <td>{{stats.teachers.activated}}</td>
+                  <td>{{stats.teachers.inactivated}}</td>
+                  <td>{{stats.teachers.total}}</td>
+              </tr>
+              <tr>
+                  <td>{{phrase.students}}</td>
+                  <td>{{stats.students.activated}}</td>
+                  <td>{{stats.students.inactivated}}</td>
+                  <td>{{stats.students.total}}</td>
+              </tr>
+              <tr>
+                  <td>{{phrase.parents}}</td>
+                  <td>{{stats.parents.activated}}</td>
+                  <td>{{stats.parents.inactivated}}</td>
+                  <td>{{stats.parents.total}}</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.stdAttendance">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.studentAttendance}}</h3>
+      </div>
+      <div class="box-body table-responsive">
+          <form class="form-horizontal" ng-submit="statsAttendance()" name="attendance" novalidate>
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.class}}</label>
+              <div class="col-sm-10">
+                <select class="form-control" ng-model="form.classId" name="classId" ng-change="subjectList()">
+              <option disabled selected value="">Select a Class</option>
+                  <option ng-repeat="(key,value) in attendanceStats.classes" value="{{key}}">{{value}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" ng-show="attendanceStats.attendanceModel == 'subject'">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Subject}}</label>
+              <div class="col-sm-10">
+                <select class="form-control" ng-model="form.subjectId" name="subjectId">
+              <option disabled selected value="">Select a Subject</option>
+                  <option ng-repeat="subject in subjects" value="{{subject.id}}">{{subject.subjectTitle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': attendance.attendanceDayFrom.$invalid}">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.from}}</label>
+              <div class="col-sm-10">
+                <input type="text" name="attendanceDayFrom" ng-model="form.attendanceDayFrom" placeholder="From" class="form-control datemask" required>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': attendance.attendanceDayTo.$invalid}">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.to}}</label>
+              <div class="col-sm-10">
+                <input type="text" name="attendanceDayTo" ng-model="form.attendanceDayTo" placeholder="To" class="form-control datemask" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Status}}</label>
+              <div class="col-sm-10">
+                <select class="form-control" ng-model="form.status" name="status">
+                  <option disabled selected value="">Selec Status</option>
+                  <option value="All">{{phrase.all}}</option>
+                  <option value="1">{{phrase.Present}}</option>
+                  <option value="0">{{phrase.Absent}}</option>
+                  <option value="2">{{phrase.Late}}</option>
+                  <option value="3">{{phrase.LateExecuse}}</option>
+                  <option value="4">{{phrase.earlyDismissal}}</option>
+                </select>
+              </div>
+            </div>
+            <div date-picker selector=".datemask" ></div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" ng-disabled="attendance.$invalid">{{phrase.attendanceSearch}}</button>
+              </div>
+            </div>
+          </form>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.stdAttendanceReport">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="btn-group pull-right no-print">
+     <button type="button" class="btn btn-success btn-flat">{{phrase.Export}}</button>
+     <button type="button" class="btn btn-success btn-flat dropdown-toggle" data-toggle="dropdown">
+         <span class="caret"></span>
+         <span class="sr-only">{{phrase.toggleDropdown}}</span>
+     </button>
+     <ul class="dropdown-menu" role="menu">
+         <li><a ng-click="statsAttendanceExport('excel')">{{phrase.ExportExcel}}</a></li>
+         <li><a ng-click="statsAttendanceExport('pdf')" target="_BLANK">{{phrase.ExportPDF}}</a></li>
+     </ul>
+ </div>
+ <div class="box col-xs-12">
+    <div class="box-header">
+      <h3 class="box-title">{{phrase.attendanceStats}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <table class="table table-bordered">
+          <tbody><tr>
+              <th style="width: 10px">#</th>
+              <th>{{phrase.Date}}</th>
+              <th>{{phrase.studentName}}</th>
+              <th ng-show="attendanceModel='subject'">{{phrase.Subject}}</th>
+              <th>{{phrase.Attendance}}</th>
+          </tr>
+          <tr ng-repeat="student in attendanceData | object2Array | orderBy:'studentRollId'">
+              <td>{{student.studentRollId}}</td>
+              <td>{{student.date}}</td>
+              <td><a href="javascript:void(0)" ng-click="studentProfile( student.studentId )">{{student.studentName}}</a></td>
+              <td ng-show="attendanceModel='subject'">{{student.studentSubject}}</td>
+              <td>
+                <div>
+                  <span ng-show="student.status =='0'">{{phrase.Absent}}</span>
+                  <span ng-show="student.status =='1'">{{phrase.Present}}</span>
+                  <span ng-show="student.status =='2'">{{phrase.Late}}</span>
+                  <span ng-show="student.status =='3'">{{phrase.LateExecuse}}</span>
+                  <span ng-show="student.status =='4'">{{phrase.earlyDismissal}}</span>
+                </div>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.stfAttendance" style="display:none">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.staffAttendance}}</h3>
+      </div>
+      <div class="box-body table-responsive">
+          <form class="form-horizontal" ng-submit="staffAttendance()" name="attendance" novalidate>
+            <div class="form-group" ng-class="{'has-error': attendance.attendanceDayFrom.$invalid}">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.from}}</label>
+              <div class="col-sm-10">
+                <input type="text" name="attendanceDayFrom" ng-model="form.attendanceDayFrom" placeholder="From" class="form-control datemask" required>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': attendance.attendanceDayTo.$invalid}">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.to}}</label>
+              <div class="col-sm-10">
+                <input type="text" name="attendanceDayTo" ng-model="form.attendanceDayTo" placeholder="To" class="form-control datemask" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Status}}</label>
+              <div class="col-sm-10">
+                <select class="form-control" ng-model="form.status" name="status">
+              <option disabled selected value="">Select Status</option>
+                  <option value="All">{{phrase.all}}</option>
+                  <option value="1">{{phrase.Present}}</option>
+                  <option value="0">{{phrase.Absent}}</option>
+                  <option value="2">{{phrase.Late}}</option>
+                  <option value="3">{{phrase.LateExecuse}}</option>
+                </select>
+              </div>
+            </div>
+            <div date-picker selector=".datemask" ></div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" ng-disabled="attendance.$invalid">{{phrase.attendanceSearch}}</button>
+              </div>
+            </div>
+          </form>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.stfAttendanceReport" style="display:none">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="btn-group pull-right no-print">
+     <button type="button" class="btn btn-success btn-flat">{{phrase.Export}}</button>
+     <button type="button" class="btn btn-success btn-flat dropdown-toggle" data-toggle="dropdown">
+         <span class="caret"></span>
+         <span class="sr-only">{{phrase.toggleDropdown}}</span>
+     </button>
+     <ul class="dropdown-menu" role="menu">
+         <li><a ng-click="staffAttendanceExport('excel')">{{phrase.ExportExcel}}</a></li>
+         <li><a ng-click="staffAttendanceExport('pdf')" target="_BLANK">{{phrase.ExportPDF}}</a></li>
+     </ul>
+ </div>
+  <div class="box col-xs-12">
+    <div class="box-header">
+      <h3 class="box-title">{{phrase.attendanceStats}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <table class="table table-bordered">
+          <tbody><tr>
+              <th>{{phrase.Date}}</th>
+              <th>{{phrase.studentName}}</th>
+              <th>{{phrase.Attendance}}</th>
+          </tr>
+          <tr ng-repeat="student in attendanceData | object2Array | orderBy:'studentRollId'">
+              <td>{{student.date}}</td>
+              <td><a href="javascript:void(0)" ng-click="teacherProfile( student.studentId )">{{student.studentName}}</a></td>
+              <td>
+                <div>
+                  <span ng-show="student.status =='0'">{{phrase.Absent}}</span>
+                  <span ng-show="student.status =='1'">{{phrase.Present}}</span>
+                  <span ng-show="student.status =='2'">{{phrase.Late}}</span>
+                  <span ng-show="student.status =='3'">{{phrase.LateExecuse}}</span>
+                </div>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.stVacation" style="display:none">
+ <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+ <div class="box col-xs-12">
+   <div class="box-header">
+       <h3 class="box-title">{{phrase.studentVacation}}</h3>
+   </div>
+   <div class="box-body table-responsive">
+     <form class="form-horizontal" ng-submit="getVacation()" name="vacation" novalidate>
+       <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': vacation.fromDate.$invalid}">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.from}} *</label>
+         <div class="col-sm-10">
+           <input type="text" name="fromDate" ng-model="form.fromDate" class="form-control datemask" required>
+         </div>
+       </div>
+       <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': vacation.toDate.$invalid}">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.to}} *</label>
+         <div class="col-sm-10">
+           <input type="text" name="toDate" ng-model="form.toDate" class="form-control datemask" required>
+         </div>
+       </div>
+       <div date-picker selector=".datemask" ></div>
+       <div class="form-group">
+         <div class="col-sm-offset-2 col-sm-10">
+           <button type="submit" class="btn btn-default" ng-disabled="vacation.$invalid">{{phrase.getVacation}}</button>
+         </div>
+       </div>
+     </form>
+   </div>
+ </div>
+</section>
+
+<section class="content" ng-show="views.teacherVacation" style="display:none">
+ <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+ <div class="box col-xs-12">
+   <div class="box-header">
+       <h3 class="box-title" style="display:none">{{phrase.teacherVacation}}</h3>
+   </div>
+   <div class="box-body table-responsive">
+     <form class="form-horizontal" ng-submit="gettVacation()" name="tvacation" novalidate>
+       <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': tvacation.fromDate.$invalid}">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.from}} *</label>
+         <div class="col-sm-10">
+           <input type="text" name="fromDate" ng-model="form.fromDate" class="form-control datemask" required>
+         </div>
+       </div>
+       <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': tvacation.toDate.$invalid}">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.to}} *</label>
+         <div class="col-sm-10">
+           <input type="text" name="toDate" ng-model="form.toDate" class="form-control datemask" required>
+         </div>
+       </div>
+       <div date-picker selector=".datemask" ></div>
+       <div class="form-group">
+         <div class="col-sm-offset-2 col-sm-10">
+           <button type="submit" class="btn btn-default" ng-disabled="tvacation.$invalid">{{phrase.getVacation}}</button>
+         </div>
+       </div>
+     </form>
+   </div>
+ </div>
+</section>
+
+<section class="content" ng-show="views.vacationList" style="display:none">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+      <h3 class="box-title">{{phrase.vacationList}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <table class="table table-bordered">
+          <tbody><tr>
+              <th>{{phrase.user}}</th>
+              <th>{{phrase.Date}}</th>
+              <th>{{phrase.Status}}</th>
+              <th>{{phrase.Remove}}</th>
+          </tr>
+          <tr ng-repeat="report in vacationData">
+              <td>{{report.fullName}}</td>
+              <td>{{report.vacDate}}</td>
+              <td>
+                  <span ng-show="report.acceptedVacation == '1'">{{phrase.acceptedVacation}}</span>
+                  <span ng-show="report.acceptedVacation == '0'">{{phrase.rejectedVacation}}</span>
+              </td>
+              <td><a ng-click="removeVacation(report.id,$index)">{{phrase.Remove}</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.paymentsReports" style="display:none">
+    <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+    <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.paymentsReports}}</h3>
+      </div>
+      <div class="box-body table-responsive">
+        <form class="form-horizontal" ng-submit="getPayments()" name="payments" novalidate>
+          <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': payments.fromDate.$invalid}">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.from}} *</label>
+            <div class="col-sm-10">
+              <input type="text" name="fromDate" ng-model="form.fromDate" placeholder"From" class="form-control datemask" required>
+            </div>
+          </div>
+          <div class="form-group" style="z-index: 999999999;" ng-class="{'has-error': payments.toDate.$invalid}">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.to}} *</label>
+            <div class="col-sm-10">
+              <input type="text" name="toDate" ng-model="form.toDate" placeholder"To" class="form-control datemask" required>
+            </div>
+          </div>
+          <div date-picker selector=".datemask" ></div>
+          <div class="form-group" ng-class="{'has-error': payments.status.$invalid}">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.Status}}</label>
+            <div class="col-sm-10">
+                <option disabled selected value="">Select Status</option>
+                <option value="All">{{phrase.all}}</option>
+                <option value="1">{{phrase.paid}}</option>
+                <option value="0">{{phrase.unpaid}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default" ng-disabled="payments.$invalid">{{phrase.getPaymentReports}}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+</section>
+
+<section class="content" ng-show="views.paymentsResult" style="display:none">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.listPayments}}</h3>
+      </div>
+      <div class="box-body table-responsive">
+          <table class="table table-hover">
+              <tbody><tr>
+                  <th>{{phrase.ID}}</th>
+                  <th>{{phrase.paymentTitleDate}}</th>
+                  <th>{{phrase.paymentDesc}}</th>
+                  <th>{{phrase.student}}</th>
+                  <th>{{phrase.Amount}}</th>
+                  <th>{{phrase.Status}}</th>
+              </tr>
+              <tr ng-repeat="payment in payments">
+                  <td>{{payment.id}}</td>
+                  <td>{{payment.paymentTitle}} - {{payment.paymentDate}}</td>
+                  <td>{{payment.paymentDescription}}</td>
+                  <td>
+                      <img alt="{{payment.fullName}}" class="user-image img-circle" style="width:35px; height:35px;" ng-src="{{'dashboard/profileImage/'+payment.studentId}}">
+                      <a href="" ng-click="studentProfile( payment.studentId )">{{payment.fullName}}</a>
+                  </td>
+                  <td>{{payment.paymentAmount}} </td>
+                  <td>
+                    <span ng-click="alertPaidData(payment.id)" ng-show="payment.paymentStatus == '1'" style='color:green;cursor:pointer;'>{{phrase.paid}}</span>
+                    <span ng-show="payment.paymentStatus == '0'" style='color:red;'>{{phrase.unpaid}}</span>
+                  </td>
+              </tr>
+              <tr ng-show="!payments.length"><td class="noTableData" colspan="7">{{phrase.noPayments}}</td></tr>
+          </tbody></table>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.marksheetGeneration">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.Return}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">Marksheet Generation</h3>
+      </div>
+      <div class="box-body table-responsive">
+          <form class="form-horizontal" target="_blank" name="marksheetGeneration" method="POST" action="students/printbulk/marksheet" novalidate>
+            <div class="form-group" ng-class="{'has-error': marksheetGeneration.classId.$invalid}">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.class}}</label>
+              <div class="col-sm-10">
+                <select class="form-control" ng-model="form.classId" name="classId" required>
+                  <option ng-repeat="(key,value) in classes" value="{{value.id}}">{{value.className}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error': marksheetGeneration.examId.$invalid}">
+              <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.examsList}}</label>
+              <div class="col-sm-10">
+                <select class="form-control" ng-model="form.examId" name="examId" required>
+                  <option ng-repeat="(key,value) in exams" value="{{value.id}}">{{value.examTitle}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" ng-disabled="marksheetGeneration.$invalid">Generate marksheet</button>
+              </div>
+            </div>
+          </form>
+      </div>
+  </div>
+</section>
+
+<modal visible="showModal"><div ng-bind-html="modalContent"></div></modal>

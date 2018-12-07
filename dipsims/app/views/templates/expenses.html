@@ -1,0 +1,131 @@
+ <section class="content-header">
+    <h1>
+        <i class="fa fa-check-square-o"></i> {{phrase.Expenses}}
+    </h1>
+</section>
+
+
+<section class="content" ng-show="views.list">
+  <a ng-click="changeView('add')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.addExpense}}</a>
+  <div class="box col-xs-12">
+      <div class="box-header">
+          <h3 class="box-title">{{phrase.Expenses}}</h3>
+          <div class="box-tools">
+              <div class="input-group">
+                <input type="text" name="table_search" ng-model="searchText" placeholder="{{phrase.Search}}" class="form-control input-sm">
+                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+              </div>
+          </div>
+      </div>
+      <div class="box-body table-responsive">
+          <div ng-repeat="(key,value) in expenses">
+              <h4>{{key}} - Total : {{getTotal(key)}}</h4>
+              <table class="table table-bordered">
+                  <tbody><tr>
+                      <th>{{phrase.expenseTitle}}</th>
+                      <th>{{phrase.expenseAmount}}</th>
+                      <th>{{phrase.Date}}</th>
+                      <th>{{phrase.notes}}</th>
+                      <th>{{phrase.Operations}}</th>
+                  </tr>
+                  <tr ng-repeat="expense in value | filter:searchText">
+                      <td>{{expense.expenseTitle}}</td>
+                      <td>{{expense.expenseAmount}}</td>
+                      <td>{{expense.expenseDate * 1000 | date:'MM/dd/yyyy'}}</td>
+                      <td>{{expense.expenseNotes}}</td>
+                      <td>
+                        <a ng-click="edit(expense.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.Edit}}" tooltip><i class="fa fa-pencil"></i></a>
+                        <a ng-click="remove(expense,$index)" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a>
+                      </td>
+                  </tr>
+              </tbody></table>
+          </div>
+      </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelAdd}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.addExpense}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="addGrade" role="form" ng-submit="saveAdd()" novalidate>
+        <div class="form-group" ng-class="{'has-error': addGrade.expenseTitle.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.expenseTitle}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="expenseTitle" ng-model="form.expenseTitle" class="form-control" required placeholder="{{phrase.expenseTitle}}">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addGrade.expenseAmount.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.expenseAmount}} * </label>
+          <div class="col-sm-10">
+            <textarea name="expenseAmount" class="form-control" ng-model="form.expenseAmount" required placeholder="{{phrase.expenseAmount}}"></textarea>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addGrade.expenseDate.$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.ExpenseDate}} *</label>
+          <div class="col-sm-10">
+            <input type="text" name="expenseDate" ng-model="form.expenseDate" class="form-control datemask" required placeholder="{{phrase.ExpenseDate}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.notes}} *</label>
+          <div class="col-sm-10">
+            <textarea name="expenseNotes" ng-model="form.expenseNotes" class="form-control" placeholder="{{phrase.notes}}"></textarea>
+          </div>
+        </div>
+        <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="addGrade.$invalid">{{phrase.addExpense}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelEdit}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.editExpense}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="editGrade" role="form" ng-submit="saveEdit()" novalidate>
+          <div class="form-group" ng-class="{'has-error': addGrade.expenseTitle.$invalid}">
+            <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.expenseTitle}} * </label>
+            <div class="col-sm-10">
+              <input type="text" name="expenseTitle" ng-model="form.expenseTitle" class="form-control" required placeholder="{{phrase.expenseTitle}}">
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': addGrade.expenseAmount.$invalid}">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.expenseAmount}} * </label>
+            <div class="col-sm-10">
+              <textarea name="expenseAmount" class="form-control" ng-model="form.expenseAmount" placeholder="{{phrase.expenseAmount}}"></textarea>
+            </div>
+          </div>
+          <div class="form-group" ng-class="{'has-error': addGrade.expenseDate.$invalid}">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.ExpenseDate}} *</label>
+            <div class="col-sm-10">
+              <input type="text" name="expenseDate" ng-model="form.expenseDate" class="form-control datemask" required placeholder="{{phrase.ExpenseDate}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.notes}} *</label>
+            <div class="col-sm-10">
+              <textarea name="expenseNotes" ng-model="form.expenseNotes" class="form-control" placeholder="{{phrase.notes}}"></textarea>
+            </div>
+          </div>
+          <div date-picker selector=".datemask" ></div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default" ng-disabled="editGrade.$invalid">{{phrase.editExpense}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

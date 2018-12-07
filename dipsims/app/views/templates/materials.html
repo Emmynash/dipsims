@@ -1,0 +1,147 @@
+<section class="content-header">
+   <h1>
+       <i class="fa fa-book"></i> {{phrase.studyMaterial}}
+   </h1>
+</section>
+
+
+<section class="content" ng-show="views.list">
+ <a ng-if="userRole == 'admin' || userRole == 'teacher'" ng-click="changeView('add')" class="floatRTL btn btn-success btn-flat pull-right marginBottom15">{{phrase.addMaterial}}</a>
+ <div class="box col-xs-12">
+     <div class="box-header">
+         <h3 class="box-title">{{phrase.listStudyMaterial}}</h3>
+         <div class="box-tools">
+             <div class="input-group">
+               <input type="text" name="table_search" ng-model="searchText" placeholder="{{phrase.Search}}" class="form-control input-sm">
+               <span class="input-group-addon"><i class="fa fa-search"></i></span>
+             </div>
+         </div>
+     </div>
+     <div class="box-body table-responsive">
+         <table class="table table-hover">
+             <tbody><tr>
+                 <th>{{phrase.materialTitle}}</th>
+                 <th>{{phrase.materialDesc}}</th>
+                 <th>{{phrase.Operations}}</th>
+             </tr>
+             <tr ng-repeat="material in materials | filter:searchText">
+                 <td>{{material.material_title}}</td>
+                 <td>{{material.material_description}}</td>
+                 <td>
+                   <a target="_blank" href="{{'materials/download/'+material.id}}" type="button" class="btn btn-info btn-flat" title="{{phrase.Download}}" tooltip><i class="fa fa-cloud-download"></i></a>
+                   <a ng-if="userRole == 'admin' || userRole == 'teacher'" ng-click="edit(material.id)" type="button" class="btn btn-info btn-flat" title="{{phrase.Edit}}" tooltip><i class="fa fa-pencil"></i></a>
+                   <a ng-if="userRole == 'admin' || userRole == 'teacher'" ng-click="remove(material,$index)" type="button" class="btn btn-danger btn-flat" title="{{phrase.Remove}}" tooltip><i class="fa fa-trash-o"></i></a>
+                 </td>
+             </tr>
+             <tr ng-show="materials.length == '0'"><td class="noTableData" colspan="5">{{phrase.noMaterialData}}</td></tr>
+         </tbody></table>
+     </div>
+ </div>
+</section>
+
+<section class="content" ng-show="views.add">
+  <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelAdd}}</a>
+  <div class="box col-xs-12">
+    <div class="box-header">
+        <h3 class="box-title">{{phrase.addMaterial}}</h3>
+    </div>
+    <div class="box-body table-responsive">
+      <form class="form-horizontal" name="addDorm" role="form" ng-upload="saveAdd(content)" role="form" method="post" action="materials" novalidate>
+        <div class="form-group" ng-class="{'has-error': addDorm.material_title.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.materialTitle}} * </label>
+          <div class="col-sm-10">
+            <input type="text" name="material_title" ng-model="form.material_title" class="form-control" required placeholder="{{phrase.materialTitle}}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.materialDesc}}</label>
+          <div class="col-sm-10">
+            <textarea name="material_description" class="form-control" ng-model="form.material_description" placeholder="{{phrase.materialDesc}}"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.materialFile}}</label>
+          <div class="col-sm-10">
+            <input type="file" name="material_file" id="material_add_file">
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addDorm['class_id[]'].$invalid}">
+          <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.class}} *</label>
+          <div class="col-sm-10">
+            <select class="form-control" ng-model="form.class_id" name="class_id[]" multiple required>
+              <option ng-repeat="class in classes" value="{{class.id}}">{{class.className}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" ng-class="{'has-error': addDorm.subject_id.$invalid}">
+          <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.Subject}} *</label>
+          <div class="col-sm-10">
+            <select class="form-control" ng-model="form.subject_id" required name="subject_id">
+              <option disabled selected value="">Select A Subject</option>
+              <option ng-repeat="subjectOne in subject" value="{{subjectOne.id}}">{{subjectOne.subjectTitle}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <input type="hidden" name="_token" value="{{CSRF_TOKEN}}">
+            <button type="submit" class="btn btn-default" ng-disabled="addDorm.$invalid">{{phrase.addMaterial}}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="content" ng-show="views.edit">
+ <a ng-click="changeView('list')" class="floatRTL btn btn-danger btn-flat pull-right marginBottom15">{{phrase.cancelEdit}}</a>
+ <div class="box col-xs-12">
+   <div class="box-header">
+       <h3 class="box-title">{{phrase.editMaterial}}</h3>
+   </div>
+   <div class="box-body table-responsive">
+     <form class="form-horizontal" name="editDorm" role="form"  ng-upload="saveEdit(content)" role="form" method="post" action="{{'materials/' + form.id}}" novalidate>
+       <div class="form-group" ng-class="{'has-error': editDorm.material_title.$invalid}">
+         <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.materialTitle}} * </label>
+         <div class="col-sm-10">
+           <input type="text" name="material_title" ng-model="form.material_title" class="form-control" required placeholder="{{phrase.materialTitle}}">
+         </div>
+       </div>
+       <div class="form-group">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.materialDesc}}</label>
+         <div class="col-sm-10">
+           <textarea name="material_description" class="form-control" ng-model="form.material_description" placeholder="{{phrase.materialDesc}}"></textarea>
+         </div>
+       </div>
+       <div class="form-group">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.materialFile}}</label>
+         <div class="col-sm-10">
+           <input type="file" name="material_file" id="material_edit_file">
+         </div>
+       </div>
+       <div class="form-group" ng-class="{'has-error': editDorm['class_id[]'].$invalid}">
+         <label for="inputPassword3" class="col-sm-2 control-label">{{phrase.class}} *</label>
+         <div class="col-sm-10">
+           <select class="form-control" ng-model="form.class_id" name="class_id[]" id="editClassId" multiple required>
+             <option ng-repeat="class in classes" value="{{class.id}}">{{class.className}}</option>
+           </select>
+         </div>
+       </div>
+       <div class="form-group" ng-class="{'has-error': editDorm.subject_id.$invalid}">
+         <label for="inputEmail3" class="col-sm-2 control-label">{{phrase.Subject}} *</label>
+         <div class="col-sm-10">
+           <select class="form-control" ng-model="form.subject_id" required name="subject_id">
+             <option ng-repeat="subjectOne in subject" value="{{subjectOne.id}}">{{subjectOne.subjectTitle}}</option>
+           </select>
+         </div>
+       </div>
+       <div class="form-group">
+         <div class="col-sm-offset-2 col-sm-10">
+           <input type="hidden" name="_token" value="{{CSRF_TOKEN}}">
+           <button type="submit" class="btn btn-default" ng-disabled="editDorm.$invalid">{{phrase.editMaterial}}</button>
+         </div>
+       </div>
+     </form>
+   </div>
+ </div>
+</section>
